@@ -1,0 +1,10 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=164
+
+Here are some macros for html.
+
+In normal mode, the function key F1 will insert an html skeleton.
+In insert mode, F1 will complete the previous uncompleted tag.
+Typing "<" will result in a pair "<>", with the cursor in between.
+There are a number of macros beginning with ";".  For instance,
+;1 will result in <h1></h1>, with the cursor in the middle.
+Typing ;1 in visual mode will embrace the region with the tags <h1></h1>.
