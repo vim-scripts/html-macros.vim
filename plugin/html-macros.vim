@@ -1,7 +1,8 @@
 " Vim filetype plugin
-" Language:	LaTeX
+" Language:	HTML
 " Maintainer: Carl Mueller, cmlr@math.rochester.edu
 " Last Change:	December 3, 2001
+" Version:  1.0
 " Website:  http://www.math.rochester.edu/u/cmlr/vim/syntax/index.html
 " This is an html mode.  Typing "<" produces "<>" with the cursor in
 " between.  After that, you should be able to do everything else with the
@@ -9,7 +10,7 @@
 " <h1></h1> with the cursor in between.  ;ta inserts <table></table> and
 " ;td inserts <td></td>.
 
-noremap <buffer> K :!netscape file:$PWD/% &<CR><Esc>
+noremap <buffer> <C-K> :!netscape file:$PWD/% &<CR><Esc>
 
 " Let % work with <...> pairs.
 set matchpairs+=<:>
@@ -28,13 +29,13 @@ noremap <buffer> <F1> :if strpart(getline(1),0,6) !~ "^<\[Hh]\[Tt]\[Mm]\[Ll]>"<C
 " between.
 inoremap <buffer> <F1> <Esc>:call <SID>OneLineCompletion()<CR>i
 inoremap <buffer> <F2> <Esc>:call <SID>ThreeLineCompletion()<CR>a
-inoremap <buffer> <F3> <A href=""></A><Esc>5hi
-inoremap <buffer> <F4> <A href="mailto:"></A><Esc>5hi
+inoremap <buffer> <F3> <a href=""></a><Esc>5hi
+inoremap <buffer> <F4> <a href="mailto:"></a><Esc>5hi
 inoremap <buffer> <F5> <IMG src="" alt=""><Esc>8hi
 inoremap <buffer> <M-c> <!--  --><Esc>3hi
-inoremap <buffer> <M-h> <A href=""></A><Esc>5hi
+inoremap <buffer> <M-h> <a href=""></a><Esc>5hi
 inoremap <buffer> <M-i> <IMG src="" alt=""><Esc>8hi
-inoremap <buffer> <M-m> <A href="mailto:"></A><Esc>5hi
+inoremap <buffer> <M-m> <a href="mailto:"></a><Esc>5hi
 
 " In visual mode, F1 encloses the selected region in
 " a pair of <>...</> braces.
@@ -146,9 +147,9 @@ inoremap <buffer> ;3 <h3></h3><Esc>4hi
 inoremap <buffer> ;4 <h4></h4><Esc>4hi
 inoremap <buffer> ;5 <h5></h5><Esc>4hi
 inoremap <buffer> ;ad <address></address><Esc>F<i
-inoremap <buffer> ;ah <A href=""></A><Esc>F"i
-inoremap <buffer> ;am <A href="mailto:"></A><Esc>F"i
-inoremap <buffer> ;an <A name=""></A><Esc>F"i
+inoremap <buffer> ;ah <a href=""></a><Esc>F"i
+inoremap <buffer> ;am <a href="mailto:"></a><Esc>F"i
+inoremap <buffer> ;an <a name=""></a><Esc>F"i
 inoremap <buffer> ;b <br>
 inoremap <buffer> ;c <center></center><Esc>F<i
 inoremap <buffer> ;dd <dd>
@@ -169,14 +170,14 @@ inoremap <buffer> ;tr <tr><Esc>o</tr><Esc>O
 inoremap <buffer> ;u <ul><Esc>o<li><Esc>o</ul><Esc>O
 inoremap <buffer> ;C <!--  --><Esc>F<Space>i
 inoremap <buffer> ;R <!==  ==><Esc>F<Space>i
-inoremap <buffer> ;H <A href=""></A><Esc>F<i
+inoremap <buffer> ;H <a href=""></a><Esc>F<i
 inoremap <buffer> ;I <IMG src="" alt=""><Esc>F<i
-inoremap <buffer> ;M <A href="mailto:"></A><Esc>F<i
+inoremap <buffer> ;M <a href="mailto:"></a><Esc>F<i
 
 " Auctex style for the visual mode.  Surrounds the region by the
 " appropriate pair of tags.
-vnoremap <buffer> <F3> <C-C>`>a</A<C-V>><Esc>`<i<A href=""><Esc>v<C-C>`<hi
-vnoremap <buffer> ;ah <C-C>`>a</A<C-V>><Esc>`<i<A href=""><Esc>v<C-C>`<hi
+vnoremap <buffer> <F3> <C-C>`>a</a<C-V>><Esc>`<i<a href=""><Esc>v<C-C>`<hi
+vnoremap <buffer> ;ah <C-C>`>a</a<C-V>><Esc>`<i<a href=""><Esc>v<C-C>`<hi
 vnoremap <buffer> ;1 <C-C>:call <SID>InsertTag("h1")<CR>
 vnoremap <buffer> ;2 <C-C>:call <SID>InsertTag("h2")<CR>
 vnoremap <buffer> ;3 <C-C>:call <SID>InsertTag("h3")<CR>
@@ -202,7 +203,7 @@ vnoremap <buffer> ;R <C-C>`>a ==<C-V>><Esc>`<i<!== <Esc>
 nnoremenu 40.401 Html.template\ \ \ \ \ \ \ \ F1 :if strpart(getline(1),0,6) !~ "^<\[Hh]\[Tt]\[Mm]\[Ll]>"<CR>0read ~/.Vim/html-template.vim<CR>normal /<\/title\\|<\/TITLE<CR><CR>:endif<CR>i
 inoremenu 40.402 Html.one-line\ tag\ \ \ \ F1 <Esc>:call <SID>OneLineCompletion()<CR>i
 inoremenu 40.403 Html.two-line\ tag\ \ \ \ F2 <Esc>:call <SID>ThreeLineCompletion()<CR>a
-inoremenu 40.404 Html.href\ \ \ \ \ \ \ \ \ \ \ \ F3 <A href=""></A><Left><Left><Left><Left><Left><Left>
-inoremenu 40.405 Html.email\ \ \ \ \ \ \ \ \ \ \ F4 <A href="mailto:"></A><Left><Left><Left><Left><Left><Left>
-vnoremenu 40.406 Html.embrace\ \ \ \ \ \ \ \ \ F1 <C-C>A <Esc>`>i</><Esc>`<i<><Esc>$x`<a
+inoremenu 40.404 Html.href\ \ \ \ \ \ \ \ \ \ \ \ F3 <a href=""></a><Left><Left><Left><Left><Left><Left>
+inoremenu 40.405 Html.email\ \ \ \ \ \ \ \ \ \ \ F4 <a href="mailto:"></a><Left><Left><Left><Left><Left><Left>
+vnoremenu 40.406 Html.embrace\ \ \ \ \ \ \ \ \ F1 <C-C>a <Esc>`>i</><Esc>`<i<><Esc>$x`<a
 inoremenu 40.408 Html.put\ image\ \ \ \ \ \ \ F5 <IMG SRC=""><Left><Left>
