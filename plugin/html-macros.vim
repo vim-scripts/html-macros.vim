@@ -1,8 +1,8 @@
 " Vim filetype plugin
 " Language:	HTML
 " Maintainer: Carl Mueller, cmlr@math.rochester.edu
-" Last Change:	October 10, 2002
-" Version:  1.1
+" Last Change:	December 3, 2001
+" Version:  1.0
 " Website:  http://www.math.rochester.edu/u/cmlr/vim/syntax/index.html
 " This is an html mode.  Typing "<" produces "<>" with the cursor in
 " between.  After that, you should be able to do everything else with the
@@ -10,8 +10,7 @@
 " <h1></h1> with the cursor in between.  ;ta inserts <table></table> and
 " ;td inserts <td></td>.
 
-noremap <buffer> <C-Tab> :!netscape file:$PWD/% &<CR><Esc>
-inoremap <buffer> <C-Tab> <C-C>:!netscape file:$PWD/% &<CR><Esc>
+noremap <buffer> <C-K> :!netscape file:$PWD/% &<CR><Esc>
 
 " Let % work with <...> pairs.
 set matchpairs+=<:>
@@ -20,17 +19,15 @@ set autoindent
 set shiftwidth=2
 set smarttab
 set smartindent
-set textwidth=0
 
-" In normal mode, F1 inserts an html template.
-noremap <buffer> <F1> :if strpart(getline(1),0,6) !~ "^<\[Hh]\[Tt]\[Mm]\[Ll]>"&&strpart(getline(2),0,6) !~ "^<\[Hh]\[Tt]\[Mm]\[Ll]>"<CR>0read ~/.Vim/html-template.vim<CR>normal /<\/title\\|<\/TITLE<CR><CR>:endif<CR>4jf>a
+" In normal mode, F1 inserts a latex template.
+noremap <buffer> <F1> :if strpart(getline(1),0,6) !~ "^<\[Hh]\[Tt]\[Mm]\[Ll]>"<CR>0read ~/.Vim/html-template.vim<CR>normal /<\/title\\|<\/TITLE<CR><CR>:endif<CR>3jf>a
 
 " In insert mode, F1 looks back to find the last uncompleted <> tag, and
 " inserts the completion.  It ignores uncompleted <hr>, <p>, <li>, <im..>,
 " and their capitalized forms.  F2 does the same, but puts blank lines in
 " between.
-inoremap <buffer> <F1> <Esc>:call <SID>OneLineCompletion()<CR>a
-" For the above, get the script closetag.vim from vim.sf.net
+inoremap <buffer> <F1> <Esc>:call <SID>OneLineCompletion()<CR>i
 inoremap <buffer> <F2> <Esc>:call <SID>ThreeLineCompletion()<CR>a
 inoremap <buffer> <F3> <a href=""></a><Esc>5hi
 inoremap <buffer> <F4> <a href="mailto:"></a><Esc>5hi
@@ -43,7 +40,7 @@ inoremap <buffer> <M-m> <a href="mailto:"></a><Esc>5hi
 " In visual mode, F1 encloses the selected region in
 " a pair of <>...</> braces.
 function! s:InsertTag(tag)
-    exe "normal `>a\<C-V></" . a:tag . ">\<Esc>`<i<" . a:tag . "\<Esc>l"
+    exe "normal `>a\<C-V></" . a:tag . "\<C-V>>\<Esc>`<i<" . a:tag . "\<Esc>l"
 endfunction
 
 vnoremap <buffer> <F1> <C-C>:call <SID>InsertTag(input("HTML Tag? "))<CR>
@@ -59,7 +56,7 @@ endfunction
 inoremap <buffer> " <C-R>=<SID>Double('"','"')<CR>
 function! s:Double(left,right)
     if strpart(getline(line(".")),col(".")-2,2) == a:left . a:right
-	return "\<Del>"
+	return "\<C-O>s"
     else
 	return a:left . a:right . "\<Left>"
     endif
@@ -75,30 +72,30 @@ endfunction
 " present, they will screw things up.
 
 function! s:OneLineCompletion()
-    let string = strpart(getline(line(".")),0,col("."))
-    if string =~ "<\[^>]\*$"
+    let s:string = strpart(getline(line(".")),0,col("."))
+    if s:string =~ "<\[^>]\*$"
 	normal f>
     endif
     exe "normal v\<Esc>"
     call <SID>GoBackwardToTag()
     exe "normal ly/\\W\<CR>"
-    exe "normal `<a\<C-V></\<Esc>pa>\<Esc>"
+    exe "normal `<a</\<Esc>pF<"
 endfunction
 
 " This function is the same as the last, except it puts the matching
 " </...> three lines down, if you are inside a <...>.
 
 function! s:ThreeLineCompletion()
-    let string = strpart(getline(line(".")),0,col("."))
-    let inside = 0
-    if string =~ "<\[^>]\*$"
+    let s:string = strpart(getline(line(".")),0,col("."))
+    let s:inside = 0
+    if s:string =~ "<\[^>]\*$"
 	normal f>
-	let inside = 1
+	let s:inside = 1
     endif
     exe "normal v\<Esc>"
     call <SID>GoBackwardToTag()
     exe "normal ly/\\W\<CR>"
-    if inside
+    if s:inside
 	exe "normal `<a\<CR>\<CR></\<Esc>pk"
     else
 	exe "normal `<a</\<Esc>pl"
@@ -112,28 +109,28 @@ endfunction
 " your file, or this function won't work.
 
 function! s:GoBackwardToTag()
-    let found = 2
-    while found > 1
+    let s:found = 2
+    while s:found > 1
 	exe "normal ?<\<CR>"
-	let string = strpart(getline(line(".")),col("."),2)
-	if string[0] == '/'
-		let found = found + 1
-	elseif string !~ "!-\\\|\[Pp]>\\\|\[Bb]\[Rr]\\\|\[Ll]\[Ii]\\\|\[Hh]\[Rr]\\\|\[Ii]\[Mm]"
-		let found = found - 1
+	let s:string = strpart(getline(line(".")),col("."),2)
+	if s:string[0] == '/'
+		let s:found = s:found + 1
+	elseif s:string !~ "!-\\\|\[Pp]>\\\|\[Bb]\[Rr]\\\|\[Ll]\[Ii]\\\|\[Hh]\[Rr]\\\|\[Ii]\[Mm]"
+		let s:found = s:found - 1
 	endif
     endwhile
 endfunction
 
 noremap <buffer> <C-Del> :call <SID>DeleteTagForward()<CR>
 function! s:DeleteTagForward()
-    let string = strpart(getline(line(".")),col(".")-1,3)
-    if string[0] == "<" && string[1] != "/"
+    let s:string = strpart(getline(line(".")),col(".")-1,3)
+    if s:string[0] == "<" && s:string[1] != "/"
 	normal df>
-	let look = strpart(string,1,2)
-	if look[1] == " "
-	    let look = look[0] . ">"
+	let s:look = strpart(s:string,1,2)
+	if s:look[1] == " "
+	    let s:look = s:look[0] . ">"
 	endif
-	exe "normal /<\\/" . look . "\<CR>"
+	exe "normal /<\\/" . s:look . "\<CR>"
 	normal df>
     endif
 endfunction
@@ -144,7 +141,6 @@ inoremap <buffer> <M-,> <
 " Auctex style mode
 set notimeout
 inoremap <buffer> ;; ;
-inoremap <buffer> ;<Space> &nbsp;
 inoremap <buffer> ;1 <h1></h1><Esc>4hi
 inoremap <buffer> ;2 <h2></h2><Esc>4hi
 inoremap <buffer> ;3 <h3></h3><Esc>4hi
@@ -171,15 +167,12 @@ inoremap <buffer> ;ta <table><Esc>o</table><Esc>O
 inoremap <buffer> ;td <td></td><Esc>F<i
 inoremap <buffer> ;th <th></th><Esc>F<i
 inoremap <buffer> ;tr <tr><Esc>o</tr><Esc>O
-inoremap <buffer> ;u <ul><Esc>o<li><Esc>o</ul><Esc>kA
+inoremap <buffer> ;u <ul><Esc>o<li><Esc>o</ul><Esc>O
 inoremap <buffer> ;C <!--  --><Esc>F<Space>i
 inoremap <buffer> ;R <!==  ==><Esc>F<Space>i
 inoremap <buffer> ;H <a href=""></a><Esc>F<i
 inoremap <buffer> ;I <IMG src="" alt=""><Esc>F<i
 inoremap <buffer> ;M <a href="mailto:"></a><Esc>F<i
-inoremap <buffer> ;<Space> &nbsp;
-inoremap <buffer> ;< &lt;
-inoremap <buffer> ;> &gt;
 
 " Auctex style for the visual mode.  Surrounds the region by the
 " appropriate pair of tags.
